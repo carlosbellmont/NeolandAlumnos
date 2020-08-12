@@ -15,14 +15,20 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         ivLogo.setImageResource(R.mipmap.logo_neoland)
         ivTexto.setImageResource(R.mipmap.texto_neoland)
 
         cargarPreferencias()?.let {
+            if (it.isNotEmpty()){
+                cbRecordar.isChecked = true
+            }
             editTextTextEmailAddress.setText(it)
         }
 
-        cbRecordar.setOnClickListener {  }
+        cbRecordar.setOnClickListener {
+            if (!cbRecordar.isChecked) borrarPreferencias()
+        }
 
         bLogin.setOnClickListener {
             if (editTextTextEmailAddress.text.isEmpty()){
@@ -31,23 +37,27 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "El email debe contener una @ y un .", Toast.LENGTH_LONG).show()
             } else {
                 Toast.makeText(this, "Todo correcto", Toast.LENGTH_LONG).show()
-                    guardarPreferencias()
-
+                if (cbRecordar.isChecked){
+                    guardarPreferencias(editTextTextEmailAddress.text.toString())
+                }
+                // No debes poner un else borrarPreferencias() ya que de ese modo solamente sería posible borrar el email poniendo otro email correcto.
             }
         }
     }
 
-
+    private fun borrarPreferencias(){
+        guardarPreferencias("")
+    }
 
     private fun cargarPreferencias() : String? {
         val sharedPref = getPreferences(Context.MODE_PRIVATE)
         return sharedPref.getString(TAG_USUARIO, "")
     }
 
-    private fun guardarPreferencias() {
+    private fun guardarPreferencias(usuario : String) {
         val sharedPref = getPreferences(Context.MODE_PRIVATE)
         with (sharedPref.edit()) {
-            putString(TAG_USUARIO, editTextTextEmailAddress.text.toString())
+            putString(TAG_USUARIO, usuario)
             commit()
         }
     }

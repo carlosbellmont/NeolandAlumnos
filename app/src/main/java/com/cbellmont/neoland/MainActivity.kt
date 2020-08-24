@@ -1,15 +1,19 @@
 package com.cbellmont.neoland
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 
 class MainActivity : AppCompatActivity() {
-
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,12 +22,20 @@ class MainActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(application)).get(MainActivityViewModel::class.java)
 
+        viewModel.isLoading.observe(this, Observer<Boolean> {
+            if (it) {
+                showLoading()
+            } else {
+                hideLoading()
+            }
+        })
+
         ivLogo.setImageResource(R.mipmap.logo_neoland)
         ivTexto.setImageResource(R.mipmap.texto_neoland)
 
 
         viewModel.cargarEmailGuardado()?.let {
-            if (it.isNotEmpty()){
+            if (it.isNotEmpty()) {
                 cbRecordar.isChecked = true
             }
             editTextTextEmailAddress.setText(it)
@@ -35,12 +47,26 @@ class MainActivity : AppCompatActivity() {
 
         bLogin.setOnClickListener {
             if (viewModel.esEmailValido(editTextTextEmailAddress.text.toString())) {
-                Toast.makeText(this, "Todo correcto", Toast.LENGTH_LONG).show()
-
+                viewModel.callSend()
             } else {
-               Toast.makeText(this,  getString(viewModel.getErrorFromEmail(editTextTextEmailAddress.text.toString())), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    getString(viewModel.getErrorFromEmail(editTextTextEmailAddress.text.toString())),
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
         }
+    }
+
+    fun showLoading() {
+        loginProgressBar.visibility = View.VISIBLE
+
+    }
+
+    fun hideLoading() {
+        loginProgressBar.visibility = View.GONE
+
+
     }
 }

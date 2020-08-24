@@ -3,14 +3,20 @@ package com.cbellmont.neoland
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val _mainActivityStatus: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+    val isLoading: LiveData<Boolean> get() = _mainActivityStatus
 
     companion object {
         const val TAG_USUARIO = "TAG_USUARIO"
     }
 
-    // Comprobar
+    // Comprobar Email
 
     fun cargarEmailGuardado(): String? {
         val sharedPref = getApplication<Application>().getSharedPreferences(
@@ -50,6 +56,11 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
             R.string.maintext_email_with_dot
         }
 
+    }
+
+    fun callSend() {
+        _mainActivityStatus.value = true
+        GetAllUsers.send()
     }
 
 

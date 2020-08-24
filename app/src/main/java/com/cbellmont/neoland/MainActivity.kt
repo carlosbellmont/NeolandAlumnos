@@ -10,9 +10,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    companion object {
-        const val TAG_USUARIO = "TAG_USUARIO"
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +38,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Todo correcto", Toast.LENGTH_LONG).show()
 
             } else {
-               Toast.makeText(this,  viewModel.getErrorFromEmail(editTextTextEmailAddress.text.toString()), Toast.LENGTH_LONG).show()
+               Toast.makeText(this,  getString(viewModel.getErrorFromEmail(editTextTextEmailAddress.text.toString())), Toast.LENGTH_LONG).show()
             }
 
         }

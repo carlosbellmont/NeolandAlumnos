@@ -2,5 +2,8 @@
     <string name="app_name">NeoLand</string>
     <string name="b_login">Login</string>
     <string name="cb_login">¿Recordar usuario?</string>
+    <string name="maintext_email_not_empty">El email no puede estar vacio</string>
+    <string name="maintext_email_with_at">El email debe contener un "@"</string>
+    <string name="maintext_email_with_dot">El email debe contener un "."</string>
 
 </resources>

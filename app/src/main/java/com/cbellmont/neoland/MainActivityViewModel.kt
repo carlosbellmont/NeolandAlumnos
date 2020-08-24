@@ -3,18 +3,21 @@ package com.cbellmont.neoland
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
 
-    // COmprobar
+    companion object {
+        const val TAG_USUARIO = "TAG_USUARIO"
+    }
+
+    // Comprobar
 
     fun cargarEmailGuardado(): String? {
         val sharedPref = getApplication<Application>().getSharedPreferences(
             "preferencias.txt",
             Context.MODE_PRIVATE
         )
-        return sharedPref.getString(MainActivity.TAG_USUARIO, "")
+        return sharedPref.getString(TAG_USUARIO, "")
     }
 
     fun borrarEmail() {
@@ -27,7 +30,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
             Context.MODE_PRIVATE
         )
         with(sharedPref.edit()) {
-            putString(com.cbellmont.neoland.MainActivity.TAG_USUARIO, email)
+            putString(TAG_USUARIO, email)
             commit()
         }
     }
@@ -37,14 +40,14 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         return email.isNotEmpty() && email.contains(".") && email.contains("@")
     }
 
-    fun getErrorFromEmail(email: String): String {
+    fun getErrorFromEmail(email: String): Int {
 
         return if (email.isEmpty()) {
-            "El email no puede estar vacio"
+            R.string.maintext_email_not_empty
         } else if (!email.contains("@")) {
-            "El email debe contener un \"@\""
+            R.string.maintext_email_with_at
         } else {
-            "El email debe contener un \".\""
+            R.string.maintext_email_with_dot
         }
 
     }

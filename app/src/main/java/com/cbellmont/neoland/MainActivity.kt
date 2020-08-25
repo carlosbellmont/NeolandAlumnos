@@ -1,5 +1,6 @@
 package com.cbellmont.neoland
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -7,10 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class MainActivity : AppCompatActivity() {
@@ -22,11 +19,26 @@ class MainActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(application)).get(MainActivityViewModel::class.java)
 
+
         viewModel.isLoading.observe(this, Observer<Boolean> {
             if (it) {
                 showLoading()
             } else {
                 hideLoading()
+            }
+        })
+
+        viewModel.isError.observe(this, Observer<Boolean> {
+            if (it) {
+                Toast.makeText(this, "Ha ocurrido un error", Toast.LENGTH_LONG).show()
+            }
+        })
+
+        viewModel.goNext.observe(this, Observer<Boolean> {
+            if (it) {
+                Toast.makeText(this, "Bievenido!", Toast.LENGTH_LONG).show()
+                val intent = Intent(this, MenuActivity::class.java)
+                startActivity(intent)
             }
         })
 
@@ -48,6 +60,8 @@ class MainActivity : AppCompatActivity() {
         bLogin.setOnClickListener {
             if (viewModel.esEmailValido(editTextTextEmailAddress.text.toString())) {
                 viewModel.callSend()
+
+
             } else {
                 Toast.makeText(
                     this,
@@ -55,7 +69,6 @@ class MainActivity : AppCompatActivity() {
                     Toast.LENGTH_LONG
                 ).show()
             }
-
         }
     }
 
@@ -66,7 +79,6 @@ class MainActivity : AppCompatActivity() {
 
     fun hideLoading() {
         loginProgressBar.visibility = View.GONE
-
 
     }
 }

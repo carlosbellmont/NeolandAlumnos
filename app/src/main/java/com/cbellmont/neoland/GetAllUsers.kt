@@ -28,15 +28,21 @@ class GetAllUsers {
                     CoroutineScope(Dispatchers.IO).launch {
                         val body = response.body?.string()
                         body?.let {
-                            val jsonBody = JSONObject(body)
-                            val savedResults = jsonBody.optJSONArray("results")
-                            savedResults?.let {
-                                val gson = Gson()
-                                // indicamos de que tipo son los datos que se van a leer
-                                val itemType = object : TypeToken<List<User>>(){}.type
-                                // fromJson es una lsita de usuarios y savedResults debe ser String
-                                val usersList = gson.fromJson<List<User>>(savedResults.toString(), itemType)
-                                modelView.saveInDataBase(usersList)
+                            try {
+                                val jsonBody = JSONObject(body)
+                                val savedResults = jsonBody.optJSONArray("results")
+                                savedResults?.let {
+                                    val gson = Gson()
+                                    // indicamos de que tipo son los datos que se van a leer
+                                    val itemType = object : TypeToken<List<User>>() {}.type
+                                    // fromJson es una lsita de usuarios y savedResults debe ser String
+                                    val usersList =
+                                        gson.fromJson<List<User>>(savedResults.toString(), itemType)
+                                    modelView.saveInDataBase(usersList)
+                                }
+                            } catch (e : Exception) {
+                                Log.e("errorGetAllUsers", "La página web no ha respondido bien")
+                                modelView.callSend()
                             }
                         }
                     }

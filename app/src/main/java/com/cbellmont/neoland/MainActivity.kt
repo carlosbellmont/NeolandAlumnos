@@ -12,13 +12,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(application)).get(MainActivityViewModel::class.java)
-
 
         viewModel.isLoading.observe(this, Observer<Boolean> {
             if (it) {
@@ -60,8 +58,6 @@ class MainActivity : AppCompatActivity() {
         bLogin.setOnClickListener {
             if (viewModel.esEmailValido(editTextTextEmailAddress.text.toString())) {
                 viewModel.callSend()
-
-
             } else {
                 Toast.makeText(
                     this,

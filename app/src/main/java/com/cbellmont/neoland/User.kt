@@ -1,14 +1,21 @@
 package com.cbellmont.neoland
 
-import androidx.room.Dao
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
-@Entity
+@Entity(foreignKeys = arrayOf(
+    ForeignKey(entity = Bootcamp::class,
+        parentColumns = arrayOf("uId"),
+        childColumns = arrayOf("bootcampId"),
+        onDelete = ForeignKey.CASCADE)
+))
+
+
 data class User(
+
     var gender: String,
     var email: String,
+
+
     @Embedded
     var name: Name,
     @Embedded
@@ -16,6 +23,7 @@ data class User(
 ) {
     @PrimaryKey(autoGenerate = true)
     var uId = 0
+    var bootcampId: Int? = null
 }
 
 data class Name(

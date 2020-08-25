@@ -3,7 +3,6 @@ package com.cbellmont.neoland
 import androidx.room.*
 
 @Dao
-
 interface UserDao {
     @Query("SELECT * FROM User")
     fun getAll() : List<User>
@@ -15,4 +14,7 @@ interface UserDao {
     fun update(user : User)
     @Delete
     fun delete(user: User)
+
+    @Query("DELETE FROM User")
+    fun deleteAll()
 }

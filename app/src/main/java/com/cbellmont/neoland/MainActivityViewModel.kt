@@ -2,6 +2,7 @@ package com.cbellmont.neoland
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.random.Random
 
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
@@ -76,22 +78,28 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                 mutableIsError.value = false
                 mutableGoNext.value = false
             }
-            withContext(Dispatchers.IO){
+            withContext(Dispatchers.IO) {
                 GetAllUsers.send(this@MainActivityViewModel)
             }
         }
     }
 
-    fun saveInDataBase(list: List<User>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            withContext(Dispatchers.IO) {
-                App.getDataBase(getApplication()).userDao().insertAll(list)
+    suspend fun saveInDataBase(users: List<User>) {
+        withContext(Dispatchers.IO) {
+            users.forEach {
+                Log.e("CARLOS", App.getDatabase(getApplication()).bootcampDao().getRandom().toString())
+                Log.e("CARLOS", "${App.getDatabase(getApplication()).bootcampDao().getRandom().uId}")
+                it.bootcampId = App.getDatabase(getApplication()).bootcampDao().getRandom().uId
             }
-            withContext(Dispatchers.Main) {
-                mutableIsLoading.value = false
-                mutableGoNext.value = true
-            }
+            App.getDatabase(getApplication()).userDao().deleteAll()
+
+            App.getDatabase(getApplication()).userDao().insertAll(users)
         }
+        withContext(Dispatchers.Main) {
+            mutableIsLoading.value = false
+            mutableGoNext.value = true
+        }
+
     }
 
     fun errorLoadingData() {
@@ -102,6 +110,4 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
             }
         }
     }
-
-
 }

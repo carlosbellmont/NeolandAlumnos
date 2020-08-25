@@ -36,8 +36,7 @@ class GetAllUsers {
                                     // indicamos de que tipo son los datos que se van a leer
                                     val itemType = object : TypeToken<List<User>>() {}.type
                                     // fromJson es una lsita de usuarios y savedResults debe ser String
-                                    val usersList =
-                                        gson.fromJson<List<User>>(savedResults.toString(), itemType)
+                                    val usersList = gson.fromJson<List<User>>(savedResults.toString(), itemType)
                                     modelView.saveInDataBase(usersList)
                                 }
                             } catch (e : Exception) {
